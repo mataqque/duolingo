@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+	</head>
+	<body>
+		<button class="_33Jbm _30qMV _2N_A5 _36Vd3 _16r-S _2orIw _3PphB _9C_ii" data-test="player-next" aria-disabled="true"><span class="_1fHYG">Comprobar</span></button>
+		<script>
+			async function onClassChange(value) {
+				if (value == 'false') {
+					console.log('false');
+				}
+				if (value == 'true') {
+					console.log('true');
+				}
+			}
+
+			const button = document.querySelector('._30qMV');
+			button.addEventListener('click', () => {
+				button.ariaDisabled = button.ariaDisabled == 'true' ? 'false' : 'true';
+			});
+
+			const observer = new MutationObserver(mutations => {
+				if (mutations[0].attributeName == 'aria-disabled') {
+					onClassChange(button.ariaDisabled);
+				}
+				console.log(mutations[0]);
+			});
+
+			observer.observe(button, {
+				attributes: true,
+				attributeFilter: ['class', 'aria-disabled'],
+			});
+		</script>
+	</body>
+</html>
