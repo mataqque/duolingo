@@ -58,6 +58,7 @@ const succecions = {
 };
 
 const responses = {
+	thank_you: "You're welcome.",
 	thank_you_david: "You're welcome, Emma!",
 	thank_you_fernanda: "You're welcome, Maria.",
 };
@@ -260,7 +261,7 @@ async function completeLeccion() {
 }
 
 async function asyncInfinite() {
-	let openBntMain = document.querySelector('._2eeKH._2Q9Af');
+	let openBntMain = document.querySelector('[data-test="skill-path-level-0 skill-path-level-skill"]');
 
 	if (openBntMain) {
 		// if (true) {
@@ -291,6 +292,7 @@ async function asyncInfinite() {
 }
 
 const boton = document.createElement('button');
+boton.id = 'ejecutar';
 boton.innerHTML = 'Ejecutar';
 boton.style = 'border: 1px solid black;border-radius: 5px;z-index: 100;top: 1rem;position: fixed';
 document.body.appendChild(boton);
@@ -305,3 +307,24 @@ let recursive = setInterval(() => {
 		}
 	}
 }, 800);
+
+function recursivity() {
+	const data = ['[data-test="session-complete-slide"]', '[data-test="purchase-step-active"]', "img[src='https://d35aaqx5ub95lt.cloudfront.net/images/eab997f62389175bd43e8ea688bbf09d.svg']"];
+	data.forEach(item => {
+		const element = document.querySelector(item);
+		if (element && item === '[data-test="session-complete-slide"]') {
+			let button = document.querySelector("#session\\/PlayerFooter [data-test='player-next']");
+			button.click();
+			boton.click();
+		}
+		if (element && item === '[data-test="purchase-step-active"]') {
+			let button = document.querySelector('[data-test="plus-no-thanks"]');
+			button.click();
+			boton.click();
+		}
+		if (element && item === "img[src='https://d35aaqx5ub95lt.cloudfront.net/images/eab997f62389175bd43e8ea688bbf09d.svg']") {
+		}
+	});
+}
+
+let revision = setInterval(recursivity, 1000);
