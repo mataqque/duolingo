@@ -309,7 +309,13 @@ let recursive = setInterval(() => {
 }, 800);
 
 function recursivity() {
-	const data = ['[data-test="session-complete-slide"]', '[data-test="purchase-step-active"]', "img[src='https://d35aaqx5ub95lt.cloudfront.net/images/eab997f62389175bd43e8ea688bbf09d.svg']"];
+	const data = [
+		'[data-test="session-complete-slide"]',
+		'[data-test="purchase-step-active"]',
+		"img[src='https://d35aaqx5ub95lt.cloudfront.net/images/eab997f62389175bd43e8ea688bbf09d.svg']",
+		'[data-test="daily-quest-progress-slide"]',
+		'[data-test="daily-quest-reward-slide"]',
+	];
 	data.forEach(item => {
 		const element = document.querySelector(item);
 		if (element && item === '[data-test="session-complete-slide"]') {
@@ -323,6 +329,16 @@ function recursivity() {
 			boton.click();
 		}
 		if (element && item === "img[src='https://d35aaqx5ub95lt.cloudfront.net/images/eab997f62389175bd43e8ea688bbf09d.svg']") {
+		}
+		if (element && item === '[data-test="daily-quest-progress-slide"]') {
+			let button = document.querySelector('[data-test="player-next"]');
+			button.click();
+			boton.click();
+		}
+		if (element && item === '[data-test="daily-quest-reward-slide"]') {
+			let button = document.querySelector('[data-test="player-next"]');
+			button.click();
+			boton.click();
 		}
 	});
 }
