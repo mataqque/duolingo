@@ -58,9 +58,9 @@ const succecions = {
 };
 
 const responses = {
-	thank_you: "You're welcome.",
-	thank_you_david: "You're welcome, Emma!",
-	thank_you_fernanda: "You're welcome, Maria.",
+	thank_you: ["You're welcome!", "You're welcome."],
+	thank_you_david: ["You're welcome, Emma!"],
+	thank_you_fernanda: ["You're welcome, Maria."],
 };
 
 function getNameBetweenQuote(cadena) {
@@ -82,12 +82,8 @@ function globalfunction() {
 	var challengeTranslate = document.querySelector("[data-test='challenge challenge-translate']");
 	var challengeSelect = document.querySelector("[data-test='challenge challenge-select']");
 	var challengeMatch = document.querySelector("[data-test='challenge challenge-match']");
-
-	var listpeers = document.querySelectorAll('._2eHne:nth-child(1) div');
-
-	var btnsChallenge = document.querySelectorAll('[role=radiogroup]  [data-test=challenge-choice]');
-
 	var iconsound = document.querySelectorAll('.fs-exclude')[1];
+	var challengeSpeak = document.querySelector("[data-test='challenge challenge-speak']");
 
 	const challenge_assist = () => {
 		try {
@@ -191,7 +187,7 @@ function globalfunction() {
 				.replace(regex2, '')
 				.toLowerCase();
 			btnsDialog.forEach(btnRecieved => {
-				if (btnRecieved.querySelector('[data-test=challenge-judge-text]').textContent == responses[dialog]) {
+				if (responses[dialog].includes(btnRecieved.querySelector('[data-test=challenge-judge-text]').textContent)) {
 					btnRecieved.click();
 				}
 			});
@@ -210,7 +206,10 @@ function globalfunction() {
 			}
 		});
 	};
-
+	const challenge_speak = () => {
+		let btn = document.querySelector("[data-test='player-skip']");
+		btn.click();
+	};
 	const data = {
 		challenge_assist: challenge_assist,
 		_filloptions: _filloptions,
@@ -218,6 +217,7 @@ function globalfunction() {
 		challenge_translate: challenge_translate,
 		challenge_match: challenge_match,
 		change_select: change_select,
+		challenge_speak: challenge_speak,
 	};
 
 	if (challengeAssist) data.challenge_assist();
@@ -225,6 +225,7 @@ function globalfunction() {
 	if (challengeDialogue) data.challenge_dialogue();
 	if (challengeSelect) data.change_select();
 	if (challengeMatch) data.challenge_match();
+	if (challengeSpeak) data.challengeSpeak();
 	if (iconsound) data._filloptions();
 }
 
@@ -242,12 +243,12 @@ async function onClassChange(value) {
 	if (value == 'false') {
 		delayfunc(() => {
 			completeLeccion();
-		}, 600);
+		}, 500);
 	}
 	if (value == 'true') {
 		delayfunc(() => {
 			globalfunction();
-		}, 600);
+		}, 500);
 	}
 }
 
@@ -257,7 +258,7 @@ async function completeLeccion() {
 		await delayfunc(() => {
 			button.click();
 		}, 500);
-	}, 1000);
+	}, 800);
 }
 
 async function asyncInfinite() {
@@ -286,7 +287,7 @@ async function asyncInfinite() {
 			} else {
 				alert('doesnt find button next step');
 			}
-		}, 6000);
+		}, 4000);
 		globalfunction();
 	}
 }
@@ -306,7 +307,7 @@ let recursive = setInterval(() => {
 			allfrase.push(frase.textContent);
 		}
 	}
-}, 800);
+}, 500);
 
 function recursivity() {
 	const data = [
@@ -320,25 +321,33 @@ function recursivity() {
 		const element = document.querySelector(item);
 		if (element && item === '[data-test="session-complete-slide"]') {
 			let button = document.querySelector("#session\\/PlayerFooter [data-test='player-next']");
-			button.click();
-			boton.click();
+			delayfunc(() => {
+				button.click();
+				boton.click();
+			}, 1000);
 		}
 		if (element && item === '[data-test="purchase-step-active"]') {
 			let button = document.querySelector('[data-test="plus-no-thanks"]');
-			button.click();
-			boton.click();
+			delayfunc(() => {
+				button.click();
+				boton.click();
+			}, 1000);
 		}
 		if (element && item === "img[src='https://d35aaqx5ub95lt.cloudfront.net/images/eab997f62389175bd43e8ea688bbf09d.svg']") {
 		}
 		if (element && item === '[data-test="daily-quest-progress-slide"]') {
 			let button = document.querySelector('[data-test="player-next"]');
-			button.click();
-			boton.click();
+			delayfunc(() => {
+				button.click();
+				boton.click();
+			}, 1000);
 		}
 		if (element && item === '[data-test="daily-quest-reward-slide"]') {
 			let button = document.querySelector('[data-test="player-next"]');
-			button.click();
-			boton.click();
+			delayfunc(() => {
+				button.click();
+				boton.click();
+			}, 1000);
 		}
 	});
 }
