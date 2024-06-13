@@ -1,3 +1,4 @@
+const TIME = 200;
 const dictionary = {
 	hola: 'hello',
 	de_nada: "you're welcome",
@@ -55,9 +56,13 @@ const succecions = {
 	coffee_with_milk_please: ['Café', 'con', 'leche', 'por', 'favor'],
 	milk: ['Leche'],
 	tea: ['Té'],
+	azúcar: ['sugar'],
+	thank_you: ['Gracias'],
 };
 
 const responses = {
+	azúcar: ['sugar'],
+	sugar: ['azucar'],
 	thank_you: ["You're welcome!", "You're welcome."],
 	thank_you_david: ["You're welcome, Emma!"],
 	thank_you_fernanda: ["You're welcome, Maria."],
@@ -87,128 +92,159 @@ function globalfunction() {
 
 	const challenge_assist = () => {
 		try {
-			const regex = /"([^"]*)"/;
-			const frase = document.querySelector("[data-test='challenge challenge-assist'] [lang='es']").textContent;
-			const btns = challengeAssist.querySelectorAll("[role='radiogroup'] [data-test='challenge-choice'] [data-test='challenge-judge-text']");
-			let word = frase.replace(' ', '_');
-			btns.forEach(btn => {
-				if (btn.textContent === dictionary[word]) {
-					btn.click();
+			delayfunc(() => {
+				const regex = /"([^"]*)"/;
+				let frase = document.querySelector("[data-test='challenge challenge-assist'] [lang='es']");
+				if (frase && frase.textContent) {
+					frase = frase.textContent;
+					const btns = challengeAssist.querySelectorAll("[role='radiogroup'] [data-test='challenge-choice'] [data-test='challenge-judge-text']");
+					let word = frase.replace(' ', '_');
+					btns.forEach(btn => {
+						if (btn.textContent === dictionary[word]) {
+							btn.click();
+						}
+					});
+				} else {
+					console.log('No hay frase para traducir challenge_assist');
 				}
-			});
+			}, TIME);
 		} catch (error) {
 			console.log(error);
 		}
 	};
 	const _filloptions = () => {
 		try {
-			let btnsfill = document.querySelectorAll('[data-test="word-bank"] > div');
-			let regex = / /g;
-			let regex2 = /[,.'!]/g;
-			let dialog = document
-				.querySelector('[data-test="challenge challenge-translate"] [dir="ltr"] [lang="en"]')
-				.textContent.replace('?', '')
-				.replace(regex, '_')
-				.replace(regex2, '')
-				.toLowerCase();
-			succecions[dialog].forEach(wordfill => {
-				btnsfill.forEach(btnfill => {
-					if (wordfill == btnfill.textContent) {
-						btnfill.click();
-					}
-				});
-			});
+			delayfunc(() => {
+				let btnsfill = document.querySelectorAll('[data-test="word-bank"] > div');
+				let regex = / /g;
+				let regex2 = /[,.'!]/g;
+				let dialog = document.querySelector('[data-test="challenge challenge-translate"] [dir="ltr"] [lang="en"]');
+				if (dialog && dialog?.textContent) {
+					dialog.textContent.replace('?', '').replace(regex, '_').replace(regex2, '').toLowerCase();
+					succecions[dialog].forEach(wordfill => {
+						btnsfill.forEach(btnfill => {
+							if (wordfill == btnfill.textContent) {
+								btnfill.click();
+							}
+						});
+					});
+				}
+			}, 500);
 		} catch (e) {
 			console.log(e);
 		}
 	};
-
 	const challenge_translate = () => {
 		try {
-			function removeSpecialCharacter(cadena) {
-				// Define una expresión regular para encontrar los caracteres especiales
-				let expresionRegular = /[?,.;!"']/g;
-				// Reemplaza los caracteres especiales con una cadena vacía
-				let cadenaLimpia = cadena.replace(expresionRegular, '');
-				return cadenaLimpia;
-			}
-			function replaceWhiteSpece(cadena, remplazo) {
-				// Utiliza una expresión regular para encontrar todos los espacios en blanco
-				let expresionRegular = /\s+/g;
-				// Reemplaza todos los espacios en blanco con el carácter o cadena especificados
-				let cadenaRemplazada = cadena.replace(expresionRegular, remplazo);
-				return cadenaRemplazada;
-			}
-			let frase = document.querySelector("[data-test='challenge challenge-translate'] [dir='ltr']").textContent;
-			let word = replaceWhiteSpece(removeSpecialCharacter(frase), '_').toLowerCase();
-			const btns = document.querySelectorAll("[data-test='challenge challenge-translate'] [data-test='word-bank'] > div");
+			delayfunc(() => {
+				function removeSpecialCharacter(cadena) {
+					// Define una expresión regular para encontrar los caracteres especiales
+					let expresionRegular = /[?,.;!"']/g;
+					// Reemplaza los caracteres especiales con una cadena vacía
+					let cadenaLimpia = cadena.replace(expresionRegular, '');
+					return cadenaLimpia;
+				}
+				function replaceWhiteSpece(cadena, remplazo) {
+					// Utiliza una expresión regular para encontrar todos los espacios en blanco
+					let expresionRegular = /\s+/g;
+					// Reemplaza todos los espacios en blanco con el carácter o cadena especificados
+					let cadenaRemplazada = cadena.replace(expresionRegular, remplazo);
+					return cadenaRemplazada;
+				}
+				const recursivity = () => {
+					let frase = document.querySelector("[data-test='challenge challenge-translate'] [dir='ltr']");
+					if (frase && frase?.textContent) {
+						frase = frase?.textContent;
+						let word = replaceWhiteSpece(removeSpecialCharacter(frase), '_').toLowerCase();
+						const btns = document.querySelectorAll("[data-test='challenge challenge-translate'] [data-test='word-bank'] > div");
 
-			succecions[word].forEach(txt => {
-				btns.forEach(element => {
-					if (element.textContent == txt) {
-						element.querySelector('button').click();
+						succecions[word].forEach(txt => {
+							btns.forEach(element => {
+								if (element.textContent == txt) {
+									element.querySelector('button').click();
+								}
+							});
+						});
+					} else {
+						delayfunc(() => {
+							alert('No hay frase para traducir challenge_translate ${frase}');
+							recursivity();
+						}, 30);
 					}
-				});
-			});
+				};
+			}, 1000);
 		} catch (e) {
 			console.log(e);
 		}
 	};
-
 	const challenge_match = () => {
 		try {
-			listpeersEnglish = document.querySelectorAll('[dir="ltr"][lang="en"][translate="no"]');
-			listpeersEspanish = document.querySelectorAll('[dir="ltr"][lang="es"][translate="no"]');
-			listpeersEspanish.forEach(peer => {
-				peer.click();
-				let text = peer.querySelector('[data-test=challenge-tap-token-text]').textContent;
-				listpeersEnglish.forEach(peerEnglish => {
-					if (peerEnglish.querySelector('[data-test=challenge-tap-token-text]').textContent == dictionary[text]) {
-						peerEnglish.click();
-					}
+			delayfunc(() => {
+				listpeersEnglish = document.querySelectorAll('[dir="ltr"][lang="en"][translate="no"]');
+				listpeersEspanish = document.querySelectorAll('[dir="ltr"][lang="es"][translate="no"]');
+				listpeersEspanish.forEach(peer => {
+					peer.click();
+					let text = peer.querySelector('[data-test=challenge-tap-token-text]').textContent;
+					listpeersEnglish.forEach(peerEnglish => {
+						if (peerEnglish.querySelector('[data-test=challenge-tap-token-text]').textContent == dictionary[text]) {
+							peerEnglish.click();
+						}
+					});
 				});
-			});
+			}, TIME);
 		} catch (error) {
 			console.log(error);
 		}
 	};
-
 	const challenge_dialogue = () => {
 		try {
-			let btnsDialog = document.querySelectorAll('[role=radiogroup] [data-test=challenge-choice]');
-			let regex = / /g;
-			let regex2 = /[,.'!]/g;
+			delayfunc(() => {
+				let btnsDialog = document.querySelectorAll('[role=radiogroup] [data-test=challenge-choice]');
+				let regex = / /g;
+				let regex2 = /[,.'!]/g;
 
-			let dialog = document
-				.querySelectorAll('[data-test="challenge challenge-dialogue"] [dir="ltr"]')[0]
-				.textContent.replace('Hablante 1:', '')
-				.replace('?', '')
-				.replace(regex, '_')
-				.replace(regex2, '')
-				.toLowerCase();
-			btnsDialog.forEach(btnRecieved => {
-				if (responses[dialog].includes(btnRecieved.querySelector('[data-test=challenge-judge-text]').textContent)) {
-					btnRecieved.click();
-				}
-			});
+				let dialog = document
+					.querySelectorAll('[data-test="challenge challenge-dialogue"] [dir="ltr"]')[0]
+					.textContent.replace('Hablante 1:', '')
+					.replace('?', '')
+					.replace(regex, '_')
+					.replace(regex2, '')
+					.toLowerCase();
+				btnsDialog.forEach(btnRecieved => {
+					if (responses[dialog].includes(btnRecieved.querySelector('[data-test=challenge-judge-text]').textContent)) {
+						btnRecieved.click();
+					}
+				});
+			}, TIME);
 		} catch (error) {
 			console.log(error);
 		}
 	};
-
 	const change_select = () => {
-		let text = document.querySelector("[data-test='challenge challenge-select'] [data-test='challenge-header']").textContent;
-		const translate = dictionary[getNameBetweenQuote(text)];
-		const options = document.querySelectorAll("[role='radiogroup'] > div");
-		options.forEach(opt => {
-			if (opt.querySelector("[dir='ltr'][lang='en']").textContent == translate) {
-				opt.click();
+		delayfunc(() => {
+			let text = document.querySelector("[data-test='challenge challenge-select'] [data-test='challenge-header']");
+			if (text && text.textContent) {
+				text = text?.textContent;
+				const translate = dictionary[getNameBetweenQuote(text)];
+				const options = document.querySelectorAll("[role='radiogroup'] > div");
+				options.forEach(opt => {
+					if (opt.querySelector("[dir='ltr'][lang='en']").textContent == translate) {
+						opt.click();
+					}
+				});
+			} else {
+				alert('No hay frase para traducir change_select');
 			}
-		});
+		}, TIME);
 	};
 	const challenge_speak = () => {
-		let btn = document.querySelector("[data-test='player-skip']");
-		btn.click();
+		let whilebtn = setInterval(() => {
+			let btn = document.querySelector("[data-test='player-skip']");
+			if (btn) {
+				btn.click();
+				clearInterval(whilebtn);
+			}
+		}, 200);
 	};
 	const data = {
 		challenge_assist: challenge_assist,
@@ -225,7 +261,7 @@ function globalfunction() {
 	if (challengeDialogue) data.challenge_dialogue();
 	if (challengeSelect) data.change_select();
 	if (challengeMatch) data.challenge_match();
-	if (challengeSpeak) data.challengeSpeak();
+	if (challengeSpeak) data.challenge_speak();
 	if (iconsound) data._filloptions();
 }
 
@@ -241,14 +277,10 @@ const delayfunc = (func, time) => {
 var changeleccion = false;
 async function onClassChange(value) {
 	if (value == 'false') {
-		delayfunc(() => {
-			completeLeccion();
-		}, 500);
+		completeLeccion();
 	}
 	if (value == 'true') {
-		delayfunc(() => {
-			globalfunction();
-		}, 500);
+		globalfunction();
 	}
 }
 
@@ -257,38 +289,42 @@ async function completeLeccion() {
 		let button = document.querySelector("#session\\/PlayerFooter [data-test='player-next']");
 		await delayfunc(() => {
 			button.click();
-		}, 500);
-	}, 800);
+		}, 50);
+	}, 300);
 }
 
 async function asyncInfinite() {
+	window.scrollTo(0, 0);
 	let openBntMain = document.querySelector('[data-test="skill-path-level-0 skill-path-level-skill"]');
-
 	if (openBntMain) {
 		// if (true) {
 		openBntMain.click();
 		await delayfunc(() => {
 			let btnMain = document.querySelector("[data-test='skill-path-state-legendary skill-path-unit-test-0']");
 			btnMain.click();
-		}, 1000);
+		}, 500);
 		await delayfunc(() => {
-			let button = document.querySelector("#session\\/PlayerFooter [data-test='player-next']");
-			if (button) {
-				const observer = new MutationObserver(mutations => {
-					if (mutations[0].attributeName == 'aria-disabled') {
-						onClassChange(button.ariaDisabled);
-					}
-				});
-
-				observer.observe(button, {
-					attributes: true,
-					attributeFilter: ['aria-disabled'],
-				});
-			} else {
-				alert('doesnt find button next step');
-			}
-		}, 4000);
-		globalfunction();
+			let whilebutton = setInterval(() => {
+				let button = document.querySelector("#session\\/PlayerFooter [data-test='player-next']");
+				if (button) {
+					const observer = new MutationObserver(mutations => {
+						if (mutations[0].attributeName == 'aria-disabled') {
+							onClassChange(button.ariaDisabled);
+						}
+					});
+					observer.observe(button, {
+						attributes: true,
+						attributeFilter: ['aria-disabled'],
+					});
+					clearInterval(whilebutton);
+					delayfunc(() => {
+						globalfunction();
+					}, 100);
+				} else {
+					console.error('doesnt find button next step');
+				}
+			}, 100);
+		}, 3000);
 	}
 }
 
