@@ -18,9 +18,6 @@
 			}
 
 			const button = document.querySelector('._30qMV');
-			button.addEventListener('click', () => {
-				button.ariaDisabled = button.ariaDisabled == 'true' ? 'false' : 'true';
-			});
 
 			const observer = new MutationObserver(mutations => {
 				if (mutations[0].attributeName == 'aria-disabled') {
@@ -29,6 +26,9 @@
 				console.log(mutations[0]);
 			});
 
+			button.addEventListener('click', () => {
+				button.ariaDisabled = button.ariaDisabled == 'true' ? 'false' : 'true';
+			});
 			observer.observe(button, {
 				attributes: true,
 				attributeFilter: ['class', 'aria-disabled'],

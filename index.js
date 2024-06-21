@@ -81,6 +81,17 @@ function getNameBetweenQuote(cadena) {
 	return palabraEntreComillas;
 }
 
+const removeSpecialCharacter = cadena => {
+	let expresionRegular = /[?,.;!"']/g;
+	let cadenaLimpia = cadena.replace(expresionRegular, '');
+	return cadenaLimpia;
+};
+const replaceWhiteSpece = (cadena, remplazo) => {
+	let expresionRegular = /\s+/g;
+	let cadenaRemplazada = cadena.replace(expresionRegular, remplazo);
+	return cadenaRemplazada;
+};
+
 function globalfunction() {
 	var challengeDialogue = document.querySelector("[data-test='challenge challenge-dialogue']");
 	var challengeAssist = document.querySelector("[data-test='challenge challenge-assist']");
@@ -121,6 +132,7 @@ function globalfunction() {
 				let dialog = document.querySelector('[data-test="challenge challenge-translate"] [dir="ltr"] [lang="en"]');
 				if (dialog && dialog?.textContent) {
 					dialog.textContent.replace('?', '').replace(regex, '_').replace(regex2, '').toLowerCase();
+
 					succecions[dialog].forEach(wordfill => {
 						btnsfill.forEach(btnfill => {
 							if (wordfill == btnfill.textContent) {
@@ -135,46 +147,22 @@ function globalfunction() {
 		}
 	};
 	const challenge_translate = () => {
-		try {
-			delayfunc(() => {
-				function removeSpecialCharacter(cadena) {
-					// Define una expresión regular para encontrar los caracteres especiales
-					let expresionRegular = /[?,.;!"']/g;
-					// Reemplaza los caracteres especiales con una cadena vacía
-					let cadenaLimpia = cadena.replace(expresionRegular, '');
-					return cadenaLimpia;
-				}
-				function replaceWhiteSpece(cadena, remplazo) {
-					// Utiliza una expresión regular para encontrar todos los espacios en blanco
-					let expresionRegular = /\s+/g;
-					// Reemplaza todos los espacios en blanco con el carácter o cadena especificados
-					let cadenaRemplazada = cadena.replace(expresionRegular, remplazo);
-					return cadenaRemplazada;
-				}
-				const recursivity = () => {
-					let frase = document.querySelector("[data-test='challenge challenge-translate'] [dir='ltr']");
-					if (frase && frase?.textContent) {
-						frase = frase?.textContent;
-						let word = replaceWhiteSpece(removeSpecialCharacter(frase), '_').toLowerCase();
-						const btns = document.querySelectorAll("[data-test='challenge challenge-translate'] [data-test='word-bank'] > div");
-
-						succecions[word].forEach(txt => {
-							btns.forEach(element => {
-								if (element.textContent == txt) {
-									element.querySelector('button').click();
-								}
-							});
-						});
-					} else {
-						delayfunc(() => {
-							alert('No hay frase para traducir challenge_translate ${frase}');
-							recursivity();
-						}, 30);
+		const frase = document.querySelector("[data-test='challenge challenge-translate'] [dir='ltr']").textContent;
+		if (frase && frase?.length > 0) {
+			let word = replaceWhiteSpece(removeSpecialCharacter(frase), '_').toLowerCase();
+			const btns = document.querySelectorAll("[data-test='challenge challenge-translate'] [data-test='word-bank'] > div button");
+			succecions[word].forEach(txt => {
+				btns.forEach(element => {
+					if (element.textContent == txt) {
+						element.click();
 					}
-				};
-			}, 1000);
-		} catch (e) {
-			console.log(e);
+				});
+			});
+		} else {
+			delayfunc(() => {
+				alert('No hay frase para traducir challenge_translate ${frase}');
+				recursivity();
+			}, 30);
 		}
 	};
 	const challenge_match = () => {
