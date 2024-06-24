@@ -181,11 +181,14 @@ const challenge_match = ({ english, spanish }) => {
 
 const session_complete = ({ button }) => {
 	delayfunc(() => {
-		const btn = query(button);
-		if (btn) {
-			btn.click();
-			btn.click();
-		}
+		let find = setInterval(() => {
+			const btn = query(button);
+			if (btn) {
+				btn.click();
+				clearInterval(find);
+				return;
+			}
+		}, 100);
 	}, 2000);
 };
 
@@ -233,12 +236,6 @@ const TypesExercises = [
 		parameters: { button: "[data-test='player-skip']" },
 		function: challenge_speak,
 	},
-	{
-		key: "[data-test='session-complete-slide']",
-		description: 'finish lesson',
-		parameters: { button: "#session\\/PlayerFooter [data-test='player-next']" },
-		function: session_complete,
-	},
 ];
 
 function initObserver(fn) {
@@ -254,14 +251,14 @@ function initObserver(fn) {
 			if (button.ariaDisabled == 'false') {
 				delayfunc(() => {
 					button.click();
-				}, 2000);
+				}, 1500);
 			}
 			if (button.ariaDisabled == 'true') {
 				observer.disconnect();
 				delayfunc(() => {
 					button.click();
 					fn();
-				}, 2000);
+				}, 1500);
 			}
 		}
 	});
@@ -277,7 +274,7 @@ function solveChallenge() {
 		const findExample = TypesExercises.find(element => {
 			const key = query(element.key);
 			if (key) {
-				localStorage.setItem('errorobj', JSON.stringify({ key, message: 'fn solveChallenge key dont find', element: element.key }));
+				localStorage.setItem('errorobj', JSON.stringify({ message: 'fn solveChallenge key dont find', element: element.key }));
 				return true;
 			}
 			return false;
@@ -291,7 +288,7 @@ function solveChallenge() {
 			localStorage.setItem('error', 'No se encontro el tipo de ejercicio _solveChallenge');
 			return;
 		}
-	}, 1000);
+	}, 400);
 }
 
 async function init() {
@@ -315,3 +312,43 @@ boton.innerHTML = 'Ejecutar';
 boton.style = 'border: 1px solid black;border-radius: 5px;z-index: 100;top: 1rem;position: fixed;height: 50px;width: 200px; display: flex;justify-content: center;align-items: center;left:1rem';
 document.body.appendChild(boton);
 boton.addEventListener('click', init);
+
+function Repeat() {
+	let bucle = setInterval(() => {
+		const link = window.location.href;
+		if (link.includes('learn')) {
+			boton.click();
+		}
+	}, 1000);
+}
+
+Repeat();
+
+const finishLesson = [
+	{
+		key: "[data-test='session-complete-slide']",
+	},
+	{
+		key: "[data-test='streak-slide']",
+	},
+	{
+		key: "[data-test='daily-quest-reward-slide']",
+	},
+];
+
+let bucleFinish = setInterval(() => {
+	const find = finishLesson.find(element => {
+		const key = query(element.key);
+		if (key) {
+			localStorage.setItem('errorobj', JSON.stringify({ message: 'fn solveChallenge key dont find', element: element.key }));
+			return true;
+		}
+		return false;
+	});
+	if (find || query('h2').textContent.includes('Diamante')) {
+		const button = query("#session\\/PlayerFooter [data-test='player-next']");
+		delayfunc(() => {
+			button.click();
+		}, 2000);
+	}
+}, 2000);
