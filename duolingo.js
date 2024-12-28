@@ -251,14 +251,14 @@ function initObserver(fn) {
 			if (button.ariaDisabled == 'false') {
 				delayfunc(() => {
 					button.click();
-				}, 1500);
+				}, 800);
 			}
 			if (button.ariaDisabled == 'true') {
 				observer.disconnect();
 				delayfunc(() => {
 					button.click();
 					fn();
-				}, 1500);
+				}, 800);
 			}
 		}
 	});
@@ -270,25 +270,30 @@ function initObserver(fn) {
 }
 
 function solveChallenge() {
-	delayfunc(() => {
-		const findExample = TypesExercises.find(element => {
-			const key = query(element.key);
-			if (key) {
-				localStorage.setItem('errorobj', JSON.stringify({ message: 'fn solveChallenge key dont find', element: element.key }));
-				return true;
-			}
-			return false;
-		});
+	let bucle = setInterval(() => {
+		if (window.location.href.includes('level/1')) {
+			delayfunc(() => {
+				const findExample = TypesExercises.find(element => {
+					const key = query(element.key);
+					if (key) {
+						localStorage.setItem('errorobj', JSON.stringify({ message: 'fn solveChallenge key dont find', element: element.key }));
+						return true;
+					}
+					return false;
+				});
 
-		if (findExample) {
-			initObserver(solveChallenge);
-			findExample.function({ ...findExample.parameters });
+				if (findExample) {
+					initObserver(solveChallenge);
+					findExample.function({ ...findExample.parameters });
+				}
+				if (!findExample) {
+					localStorage.setItem('error', 'No se encontro el tipo de ejercicio _solveChallenge');
+					return;
+				}
+			}, 1000);
+			clearInterval(bucle);
 		}
-		if (!findExample) {
-			localStorage.setItem('error', 'No se encontro el tipo de ejercicio _solveChallenge');
-			return;
-		}
-	}, 400);
+	}, 200);
 }
 
 async function init() {
@@ -334,6 +339,9 @@ const finishLesson = [
 	{
 		key: "[data-test='daily-quest-reward-slide']",
 	},
+	{
+		key: '[data-test=plus-close-x]',
+	},
 ];
 
 let bucleFinish = setInterval(() => {
@@ -345,7 +353,7 @@ let bucleFinish = setInterval(() => {
 		}
 		return false;
 	});
-	if (find || query('h2').textContent.includes('Diamante')) {
+	if (find || query('h2')?.textContent.includes('Diamante')) {
 		const button = query("#session\\/PlayerFooter [data-test='player-next']");
 		delayfunc(() => {
 			button.click();
